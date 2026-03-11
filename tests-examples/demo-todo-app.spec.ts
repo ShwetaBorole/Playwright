@@ -10,7 +10,7 @@ const TODO_ITEMS = [
   'book a doctors appointment'
 ];
 
-test.describe('New Todo', () => {
+test.describe.only('New Todo', () => {
   test('@smoke - should allow me to add todo items ', async ({ page }) => {
     // create a new todo locator
     const newTodo = page.getByPlaceholder('What needs to be done?');
@@ -69,7 +69,7 @@ test.describe('New Todo', () => {
   });
 });
 
-test.describe('Mark all as completed', () => {
+test.describe('Mark all as completed @smoke', () => {
   test.beforeEach(async ({ page }) => {
     await createDefaultTodos(page);
     await checkNumberOfTodosInLocalStorage(page, 3);

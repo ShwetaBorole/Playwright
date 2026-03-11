@@ -11,7 +11,9 @@
     "test:e2e:smoke": "npx playwright test tests-examples/ --grep @smoke --project=chromium",
     "test:e2e:non-smoke": "npx playwright test tests-examples/ --grep-invert @smoke --project=firefox",
     "test:visual:acme": "npx playwright test example-applitools.spec.ts --project=chromium",
-    "test:visual:playwright": "npx playwright test example3.spec.ts --project=all-browsers-and-tests"
+    "test:visual:playwright": "npx playwright test example3.spec.ts --project=all-browsers-and-tests",
+    "test:tablet": "npx playwright test --project=Embedded-device --headed",
+    "test:practice": "npx playwright test tests/practice.spec.ts --headed"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +21,6 @@
   "devDependencies": {
     "@applitools/eyes-playwright": "^1.17.0",
     "@playwright/test": "^1.34.2",
-    "dotenv": "^16.0.3"
+    "dotenv": "^16.6.1"
   }
 }

@@ -24,20 +24,20 @@ export default defineConfig({
   retries: 2,
 
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? 100 : undefined,
 
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
-  // reporter: [['html', { open: 'always' }]], //always, never and on-failure (default).
-  // reporter: [['html', { outputFolder: 'my-report' }]], // report is written into the playwright-report folder in the current working directory. override it using the PLAYWRIGHT_HTML_REPORT
+  //reporter: 'html',
+  //reporter: [['html', { open: 'always' }]], //always, never and on-failure (default)
+  //reporter: [['html', { outputFolder: 'my-report' }]], // report is written into the playwright-report folder in the current working directory. override it using the PLAYWRIGHT_HTML_REPORT
   // reporter: 'dot',
   // reporter: 'list',
-  /**
-    reporter: [
-      ['list'],
-      ['json', {  outputFile: 'test-results.json' }]
-    ],
-  */
+  
+  reporter: [
+    ['list'],                                     // See progress in terminal
+    ['html', { open: 'on-failure' }],             // Only pop open the browser if something breaks
+    ['json', { outputFile: 'test-results.json' }] // Save data for later analysis
+  ],
   /**
    * custom reports: https://playwright.dev/docs/test-reporters#custom-reporters 
   */
@@ -48,12 +48,13 @@ export default defineConfig({
     // baseURL: 'http://127.0.0.1:3000',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+    // off, on, 'retain-on-failure' and on-first-retry'
+    trace: 'off',
     screenshot: 'only-on-failure',
     // headless: false,
     // ignoreHTTPSErrors: true,
     // viewport: { width: 1280, height: 720 },
-    // video: 'on-first-retry',
+    video: 'on-first-retry',
   },
     // timeout: 30000, //https://playwright.dev/docs/test-timeouts
     // expect: {
@@ -74,6 +75,18 @@ export default defineConfig({
       use: { 
         ...devices['Desktop Chrome'],
         // viewport: { width: 1280, height: 720 },
+      },
+    },
+
+    {
+      name: 'Embedded-device',
+      use: { 
+        ...devices['Tablet'], // This sets the screen size and user agent
+        browserName: 'chromium', // Override the browser to use Chrome's rendering engine
+        viewport: { width: 390, height: 844 },
+        ignoreHTTPSErrors: true, // Useful for testing dev environments
+        screenshot: 'on',       // Always take a screenshot for mobile runs
+        video: 'on',            // Always record video for mobile runs
       },
     },
 

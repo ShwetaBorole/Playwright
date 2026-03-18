@@ -2,42 +2,56 @@ import { expect, Locator, Page } from '@playwright/test';
 
 export class TopMenuPage {
     readonly page: Page;
-    readonly getStartedLink: Locator;
-    readonly nodeLink: Locator;
-    readonly javaLink: Locator;
-    readonly nodeLabel: Locator;
-    readonly javaLabel: Locator;
-    readonly nodeDescription: string = 'Installing Playwright';
-    readonly javaDescription: string = `Playwright is distributed as a set of Maven modules. The easiest way to use it is to add one dependency to your project's pom.xml as described below. If you're not familiar with Maven please refer to its documentation.`;
+    
+    // Locators for the TOP navigation bar
+    readonly docsLink: Locator;
+    readonly apiLink: Locator;
+    readonly communityLink: Locator;
+    readonly javaDropdown: Locator;
+
+    // Locators for the LEFT sidebar navigation
+    readonly installationLink: Locator;
+    readonly writingTestsLink: Locator;
+    readonly traceViewerLink: Locator;
+
+    // Expected text for assertions
+    readonly javaIntroText: string = 'Playwright is distributed as a set of Maven modules.';
 
     constructor(page: Page) {
         this.page = page;
-        this.getStartedLink = page.getByRole('link', { name: 'Get started' });
-        this.nodeLink = page.getByRole('button', {name: 'Node.js'});
-        this.javaLink = page.getByRole('navigation', { name: 'Main' }).getByText('Java');
-        this.nodeLabel = page.getByText(this.nodeDescription, {exact:true});
-        this.javaLabel = page.getByText(this.javaDescription);
+
+        // 1. TOP NAV: Scoping to the general navigation
+        this.docsLink = page.getByRole('navigation').getByRole('link', { name: 'Docs' });
+        this.apiLink = page.getByRole('navigation').getByRole('link', { name: 'API' });
+        this.communityLink = page.getByRole('navigation').getByRole('link', { name: 'Community' });
+        this.javaDropdown = page.getByRole('navigation').getByRole('button', { name: 'Java' });
+
+        // 2. SIDEBAR NAV: Scoping specifically to the 'Main' (sidebar) navigation
+        this.installationLink = page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Installation' });
+        this.writingTestsLink = page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Writing tests' });
+        this.traceViewerLink = page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'Trace Viewer' });
     }
 
-    async hoverNode() {
-        await this.nodeLink.hover();
-    }
-    
-    async clickJava() {
-        await this.javaLink.click();
+    // --- Actions ---
+
+    async clickInstallation() {
+        await this.installationLink.click();
     }
 
-    async assertPageUrl(pageUrl: RegExp) {
-        await expect(this.page).toHaveURL(pageUrl);
+    async clickApi() {
+        await this.apiLink.click();
     }
 
-    async assertNodeDescriptionNotVisible() {
-        await expect(this.nodeLabel).not.toBeVisible();
+    // --- Assertions ---
+
+    async assertJavaIntroVisible() {
+        // This searches for the specific text we stored at the top
+        await expect(this.page.getByText(this.javaIntroText)).toBeVisible();
     }
 
-    async assertJavaDescriptionVisible() {
-        await expect(this.javaLabel).toBeVisible();
+    async assertPageUrl(expectedUrl: RegExp) {
+        await expect(this.page).toHaveURL(expectedUrl);
     }
-
 }
+
 export default TopMenuPage;

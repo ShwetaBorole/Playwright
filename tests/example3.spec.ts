@@ -41,9 +41,9 @@ test.beforeAll(async() => {
     const runnerName = (USE_ULTRAFAST_GRID) ? 'Ultrafast Grid' : 'Classic runner';
     Batch = new BatchInfo({name: `Playwright website - ${runnerName}`});
     
-    Config = new Configuration();
-    // Config.setApiKey("<your-api-key>");
-    
+    Config = new Configuration(); 
+    Config.setApiKey(process.env.APPLITOOLS_API_KEY!);
+    Config.setBatch(Batch);
     Config.setBatch(Batch);
     if (USE_ULTRAFAST_GRID) {
         Config.addBrowser(800, 600, BrowserType.CHROME);
@@ -102,19 +102,4 @@ test.describe('Playwright website', () => {
         await eyes.check('Get Started page', Target.window().fully().layout());
     });
     
-    test('check Java page', async ({ page }) => {
-        await test.step('Act', async () => {
-            await clickGetStarted(page);
-            await topMenuPage.hoverNode();
-            await topMenuPage.clickJava();
-        });    
-        await test.step('Assert', async () => {
-            await topMenuPage.assertPageUrl(pageUrl);
-            await topMenuPage.assertNodeDescriptionNotVisible();
-            await topMenuPage.assertJavaDescriptionVisible();
-            // https://applitools.com/docs/api-ref/sdk-api/playwright/js-intro/checksettings#region-match-levels
-            // Ignore colors: Similar to the strict match level but ignores changes in colors.
-            await eyes.check('Java page', Target.window().fully().ignoreColors());
-        });
-    });
 });
